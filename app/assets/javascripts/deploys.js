@@ -10,6 +10,7 @@ $(function() {
       $(".btn-secondary").addClass("disabled");
       $("a[href='/download']").addClass("disabled");
       $(".eos-icon-loading").show();
+      $("a[data-toggle]").tooltip("hide");
       intervalId = setTimeout(function() {
         fetch_output(finished, intervalId);
       }, 5000);
@@ -24,7 +25,7 @@ $(function() {
     })
     .bind("ajax:complete", function() {
       $(".btn-secondary").removeClass("disabled");
-      $("a[href='/download']").removeClass("disabled");
+      $("a[href='/wrapup']").removeClass("disabled");
       $(this).removeClass("no-hover");
       if ($("#output").text().length > 0) {
         $(".eos-icon-loading").hide();
@@ -44,7 +45,7 @@ function fetch_output(finished, intervalId) {
     url: "deploy/send_current_status",
     dataType: "json",
     success: function(data) {
-      if (data.success == false) {
+      if (data.error !== null) {
         $(".eos-icon-loading").hide();
         // show rails flash message
         $("#error_message").text("Deploy operation has failed.");
@@ -53,16 +54,14 @@ function fetch_output(finished, intervalId) {
         $("#output").text($("#output").text() + data.error);
         clearTimeout(intervalId);
       } else {
-        $(".pre-scrollable").html(data.new_html);
+	      $(".pre-scrollable").html(data.new_html);
         let autoscroll = $('#deploy_log_autoscroll').prop('checked');
-        console.log('001: is autoscroll checked?:' + autoscroll);
         if(autoscroll){
-          console.log('autoscrolling');
           $(".pre-scrollable").scrollTop($(".pre-scrollable").height());
         }
-        if (!finished) {
+	      if (!finished && !data.success) {
           intervalId = setTimeout(function() {
-            fetch_output();
+	          fetch_output();
           }, 5000);
         } else {
           $(".eos-icon-loading").addClass("hide");
