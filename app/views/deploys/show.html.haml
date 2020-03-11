@@ -9,6 +9,10 @@
     %hr
     %pre.pre-scrollable
       = render 'output'
+    %hr
+    %div.form-group.form-check
+      = check_box('deploy_log', 'autoscroll', {class: 'form-check-input'})
+      %label.form-check-label= t('autoscroll')
 %p.clearfix
   %div.float-right.btn-group.steps-container
     = link_to plan_path, class: "btn btn-secondary", title: t('tooltips.prior_step'), data: { toggle: 'tooltip' } do

@@ -54,6 +54,12 @@ function fetch_output(finished, intervalId) {
         clearTimeout(intervalId);
       } else {
         $(".pre-scrollable").html(data.new_html);
+        let autoscroll = $('#deploy_log_autoscroll').prop('checked');
+        console.log('001: is autoscroll checked?:' + autoscroll);
+        if(autoscroll){
+          console.log('autoscrolling');
+          $(".pre-scrollable").scrollTop($(".pre-scrollable").height());
+        }
         if (!finished) {
           intervalId = setTimeout(function() {
             fetch_output();
